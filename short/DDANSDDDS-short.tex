@@ -231,10 +231,10 @@ BoldFont = *-Regular
 	
 	\begin{frame}[label=REQ]\frametitle{Databases} 
 		\begin{itemize}
-			\item 	\textbf{Registre des Entreprises du Québec} ($\sim$3.5 millions entries)
+			\item 	\textbf{\textit{Registre des Entreprises du Québec}} ($\sim$3.5 million entries)
 					\begin{itemize}
 						\item Names
-						\item Address
+						\item Addresses
 						\item Economic activities
 						\item Administrative informations
 					\end{itemize}
@@ -253,7 +253,7 @@ BoldFont = *-Regular
 					\item \num{1418} \textit{(commercial risk, REQ entity)}
 					\item 288 \textit{(commercial risk, None)}.
 				\end{itemize}
-			We only use the name and the address\footnote{Addresses and names are normalize (not included in the presentation).}.
+			We only use the names and the addresses\footnote{Addresses and names are normalize (not included in the presentation).}.
 	\end{frame}
 	
 	\section{Similarity Between Two Entities}
@@ -271,7 +271,7 @@ BoldFont = *-Regular
 			\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node3) at (-9.25, -2.75) {Laval \\ University};
 			\draw[->,>=stealth] (node3) edge (node1.west);
 			
-			\node[align=center](node4) at (-5, -4.5) {0.55};
+			\node[align=center](node4) at (-5, -4.5) {$0.55$};
 			
 			\draw[->,>=stealth] (node1) edge (node4);
 			\end{tikzpicture}
@@ -341,7 +341,7 @@ BoldFont = *-Regular
 			
 			\draw[->,>=stealth] (node1) edge (node5);
 			
-			\node[align=center](node4) at (-5, -7) {0.55};
+			\node[align=center](node4) at (-5, -7) {$0.55$};
 			
 			\draw[->,>=stealth] (node5) edge (node4);
 			\end{tikzpicture}
@@ -370,8 +370,8 @@ BoldFont = *-Regular
 			\centering
 			\begin{tabular}{cccc|c}
 				\toprule
-				(\%) &\begin{tabular}[c]{@{}c@{}}Logistic \\ Regression\end{tabular}  & \begin{tabular}[c]{@{}c@{}}Random \\ Forest\end{tabular} & \begin{tabular}[c]{@{}c@{}}Multilayer \\ perceptron\end{tabular} & Jaccard \\ \midrule
-				Recall    & 66,67                                                                                                               & 73,54                                                   & \textbf{79,73}                                                            & 72,51  \\
+				&\begin{tabular}[c]{@{}c@{}}Logistic \\ Regression\end{tabular}  & \begin{tabular}[c]{@{}c@{}}Random \\ Forest\end{tabular} & \begin{tabular}[c]{@{}c@{}}Multilayer \\ perceptron\end{tabular} & Jaccard \\ \midrule
+				Recall (\%)  & 66,67                                                                                                               & 73,54                                                   & \textbf{79,73}                                                            & 72,51  \\
 				\bottomrule
 			\end{tabular}
 			\note{
