@@ -45,14 +45,6 @@
 
 \graphicspath{{img/}}
 
-
-%% =============================
-%%  Informations de publication
-%% =============================
-\title{Reproductibilité en apprentissage automatique}
-\author{David Beauchemin}
-\date{30 octobre 2020}
-
 %% =======================
 %%  Apparence du document
 %% =======================
@@ -210,50 +202,25 @@ BoldFont = *-Regular
 		\end{block}}
 	\end{frame}
 	
-	\begin{frame}{How do we detect duplicate?}
-		\only<1>{\begin{center}
-			\begin{tikzpicture}[internal/.style={draw, rectangle, minimum width=4cm, inner sep=4pt},
-			every text node part/.style={align=center}]
-			\node[internal, align=center, minimum height=1.15cm](node1) at (-5, -2.75) {Duplicate \\ Detection Model};
-			
-			\node (node2) at (-1, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm, minimum width=2cm, aspect=0.2] {Database 2};
-			\draw[->,>=stealth] (node2) edge (node1.east);
-			
-			\node (node3) at (-9, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm,minimum width=2cm, aspect=0.2] {Database 1};
-			\draw[->,>=stealth] (node3) edge (node1.west);
-			
-			\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node4) at (-5, -4.5) {Laval University};
-			\draw[->,>=stealth] (node1) edge (node4);
-			\end{tikzpicture}
-		\end{center}}
-		\note{Moreover, we consider only the top 1 document as the potential candidate.}
-	\end{frame}
-	
-	\begin{frame}[label=REQ]\frametitle{Databases} 
-		\begin{itemize}
-			\item 	\textbf{\textit{Registre des Entreprises du Québec}} ($\sim$3.5 million entries)
-					\begin{itemize}
-						\item Names
-						\item Addresses
-						\item Economic activities
-						\item Administrative informations
-					\end{itemize}
-			\item 	\textbf{Private dataset} (\num{21444} enterprises)
-			\begin{itemize}
-				\item Name
-				\item Address
-				\item Economic activity
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-	
-	\begin{frame}[label=intact-REQ]\frametitle{Private Dataset and the REQ} 
-			\num{11649} commercial risk are in the province of Quebec, \num{1706} were annotated
-				\begin{itemize}
-					\item \num{1418} \textit{(commercial risk, REQ entity)}
-					\item 288 \textit{(commercial risk, None)}.
-				\end{itemize}
-			We only use the names and the addresses\footnote{Addresses and names are normalize (not included in the presentation).}.
+		\begin{frame}{How do we detect duplicate?}
+		\begin{center}
+				\begin{tikzpicture}[internal/.style={draw, rectangle, minimum width=4cm, inner sep=4pt},
+				every text node part/.style={align=center}]
+				\node[internal, align=center, minimum height=1.15cm](node1) at (-5, -2.75) {Duplicate \\ Detection Model};
+				
+				\node (node2) at (-1, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm, minimum width=2cm, aspect=0.2] {External Dataset};
+				\draw[->,>=stealth] (node2) edge (node1.east);
+				
+				\node (node3) at (-9, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm,minimum width=2cm, aspect=0.2] {Intact Dataset};
+				\draw[->,>=stealth] (node3) edge (node1.west);
+				
+				\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node4) at (-5, -4.5) {Laval University};
+				\draw[->,>=stealth] (node1) edge (node4);
+				\end{tikzpicture}
+		\end{center}
+		\note{Moreover, we consider only the top 1 document as the potential candidate.
+		
+	For the purpose of the project, we have annotated 1418 pair Intact commercial risk, REQ entity (positive example) and 288 pair Intact commercial risk and no match in the REQ database (negative example)}
 	\end{frame}
 	
 	\section{Similarity Between Two Entities}
@@ -280,18 +247,18 @@ BoldFont = *-Regular
 	\end{frame}
 
 	\begin{frame}\frametitle{Similarity Algorithm}
-        Similarities algorithms are one that measures the resemblance between two string base on the distance between their tokens.
+        Similarities algorithms are one that measures the resemblance between two strings base on the distance between their tokens.
         
         \note{10 different algorithms were used. Easy to used, No training, Give good results}
 	\end{frame}
 	
 	\begin{frame}\frametitle{Name Interesting Results}
 		\begin{table}[]
-			\begin{tabular}{cccc}
+			\begin{tabular}{ccc}
 				\toprule
-				& StoS   & Jaro-Winkler & Jaccard \\
+				& StoS   & Jaccard \\
 				\midrule
-				Recall (\%)& 44.15 & 64.95 & \textbf{65.87}    
+				Recall (\%)& 44.15 & \textbf{65.87}    
 				\\\bottomrule
 			\end{tabular}
 		\end{table}
@@ -299,29 +266,27 @@ BoldFont = *-Regular
 	
 	\begin{frame}\frametitle{Address Interesting Results}
 		\begin{table}[]
-		\begin{tabular}{cccc}
+		\begin{tabular}{ccc}
 				\toprule
-				& StoS   & Jaro-Winkler & CSS \\
+				& StoS   & CSS \\
 				\midrule
-				Recall (\%) & 13.19 &  49.79 & \textbf{50.36}    
+				Recall (\%) & 13.19 & \textbf{50.36}    
 				\\\bottomrule
 			\end{tabular}
 		\end{table}
 	\note{StoS give poor results using the normalized address due to the unomalized standard of writing (e.g., "qc" VS "(quebec)" and order of components).
 	
-	Using the address components without considering the order of the components improved results (AC).
+	Using the address components without considering the order of the components improved results (AC). For that we developped a librairy to parse address that I will discuss later.
+	
+	Since $16\%$ ($270$) of the pair \textit{(commercial risk, REQ entity)} are missing a address, the results are under-evaluated. For example, the CSS accuracy without those pairs is at $62.20\%$ near $12\%$ higher. \\\bigskip
+	
+	Those missing addresses are due to the confidentiality policy of the REQ \cite{guidereq}.
 	}
 	\end{frame}
 	
-	\begin{frame}\frametitle{Missing Addresses}
-		Since $16\%$ ($270$) of the pair \textit{(commercial risk, REQ entity)} are missing a address, the results are under-evaluated. For example, the CSS accuracy without those pairs is at $62.20\%$ near $12\%$ higher. \\\bigskip
-		
-		Those missing addresses are due to the confidentiality policy of the REQ \cite{guidereq}.
-	\end{frame}
-	
-	\begin{frame}\frametitle{Similarity Algorithm Summary}
-		Using either name or address, the similarities algorithms allows us to find the matched entity around $50\%$ of the time. \\ The leading approach been Jaccard using the name at near $67\%$.
-	\end{frame}
+%	\begin{frame}\frametitle{Similarity Algorithm Summary}
+%		Using either name or address, the similarities algorithms allows us to find the matched entity around $50\%$ of the time. \\ The leading approach been Jaccard using the name at near $67\%$.
+%	\end{frame}
 	
 	\subsection{Machine Learning}
 
@@ -398,26 +363,33 @@ BoldFont = *-Regular
 			\note{ Using a top $N$ approach greatly improved the results. 
 				 Using $N = 10$, we can achieve a near max recall at $~91\%$ with the multilayer perceptron (max of $93\%$ with the indexing)}
 	\end{frame}
-
-	\begin{frame}\frametitle{Machine Learning Algorithm Summary}
-		The used of name and address simultaneously with a machine learning algorithm improved the results. \\
-		Using a top $ N $ approach helps achieve better results when $ N $ is greater than 1.
+	
+	\begin{frame}\frametitle{Deepparse\footnote{\url{https://deepparse.org/}}}
+		\centering
+		\includegraphics[scale=0.3, keepaspectratio]{address_parsing.png}
 	\end{frame}
 
-	\begin{frame}\frametitle{Future Works}
-		\begin{itemize}
-			\item Word embeddings \cite{word2vec, glove, wu2017starspace, name2vec, singh2019embedding}
-			\item Siamese Network \cite{godbole2018siamese, 8967103}
-			\item Uses of spatial data \cite{10.1145/1183471.1183486}
-			\item Removal of more specitif stop words using a TF-IDF approach \cite{tfidf}
-		\end{itemize}
+	\begin{frame}\frametitle{Subword Embeddings}
+				\centering
+		\includegraphics[scale=0.6, keepaspectratio]{vectors.png}
+		%$$H1A\ 1B1 \rightarrow \{H1, 1A, A1, 1B, B1\}$$
+	\end{frame}
+
+	\begin{frame}\frametitle{Results}
+		\centering
+		\begin{tabular}{ccc}
+			\toprule
+			Country& FastText & BPEmb\\ \midrule
+			Canada & 98.96 & 96.98\\
+			United States & 98.49 & 96.5\\
+			\bottomrule
+		\end{tabular}
 	\end{frame}
 
 	\begin{frame}\frametitle{Conclusion}
 		\begin{itemize}
-			\item We have shown that using a similarity algorithm can achieve good results.
-			\item Uses of machine learning algorithm (such as multilayer perceptron) can achieve greater results.
-			\item Using a $N$ most similar approach, where $N$ is greater than one, help improved the results, achieving almost the max recall value.
+			\item Intact can now detect a duplicate of a commercial risk with the REQ.
+			\item Intact can now use Deepparse to parse multinational addresses.
 		\end{itemize}
 	\end{frame}
 
