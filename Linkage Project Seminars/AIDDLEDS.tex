@@ -15,6 +15,7 @@
 %%% https://creativecommons.org/licenses/by-sa/4.0/
 
 \documentclass[aspectratio=169,10pt,xcolor=x11names,english,french]{beamer}
+%\setbeameroption{show only notes}
 \usepackage{babel}
 \usepackage[autolanguage]{numprint}
 \usepackage{amsmath}
@@ -95,18 +96,16 @@
 
 %% Format de la page de titre de section;
 \makeatletter
-
 \setbeamertemplate{section page}{%
-	\begin{minipage}{40em}
-		\raggedright
-		\usebeamerfont{section title}
-		\let\hyperlink\@secondoftwo\fontsize{35}{35}\textcolor[cmyk]{0.67, 0.66, 0, 0.71}{\insertsectionhead}\par
-		\note{}
-	\end{minipage}
+	\centering
+	\usebeamerfont{section title}
+	\let\hyperlink\@secondoftwo\textcolor[cmyk]{0.67, 0.66, 0, 0.71}{\insertsectionhead}\par
 	\par
 	\vspace{\baselineskip}
+	\note{
+		section
+	}
 }
-
 \makeatother
 
 %% Polices de caractères
@@ -234,7 +233,7 @@ BoldFont = *-Regular
 			À lire
 		}
 	\end{frame}
-
+	
 	\begin{frame}{Menu}
 		\begin{enumerate}
 			\item What is our problem?
@@ -242,10 +241,12 @@ BoldFont = *-Regular
 			\item How can we compute the similarity between two entities?
 			\item Why develop our own solutions?
 		\end{enumerate}
+	\note{ à lire
+	}
 	\end{frame}
 	\section{What is our problem?}
 	\begin{frame}{What is our problem?}
-  		\begin{minipage}{\linewidth}
+		\begin{minipage}{\linewidth}
 			\centering
 			\fontsize{35}{35}\faDollarSign \vfil
 			\vspace{1em}
@@ -253,7 +254,7 @@ BoldFont = *-Regular
 		\end{minipage}
 		\note{You may have heard plenty of times that data is the new oil. But oil, thus data, is not cheap. And we are in a time where we need to move fast; therefore cannot always properly create new in-house datasets for our needs.}
 	\end{frame}
-
+	
 	\begin{frame}{What is our problem?}
 		\begin{minipage}{\linewidth}
 			\centering
@@ -263,7 +264,7 @@ BoldFont = *-Regular
 		\end{minipage}
 		\note{Moreover, with the rise of public datasets curated by large public organizations such as censuses (WHO) and various government, state and cities public datasets, it becomes more and more interesting to use those open datasets.}
 	\end{frame}
-
+	
 	\begin{frame}{What is our problem?}
 		\begin{minipage}{\linewidth}
 			\centering
@@ -273,17 +274,17 @@ BoldFont = *-Regular
 		\end{minipage}
 		\note{However, a problem arises when trying to use various open data with our private data, that is, mapping data points between different sources.}
 	\end{frame}
-
+	
 	\begin{frame}{An example}
 		Only using the name and the address of a business client is it possible to match these with external sources to leverage their content?
-		\note{I will use a use case example for the rest of this presentation. It is based on my master thesis work with an insurance company interested in using external sources to lower the number of questions in a risk assessments to compute is premium.}
+		\note{I will use a use case example for the rest of this presentation. It is based on my master thesis work with an insurance company interested in using external sources to lower the number of questions in risk assessments to compute is premiums.}
 	\end{frame}
-
+	
 	\begin{frame}{An example}
 		\begin{center}
 			\begin{tikzpicture}[internal/.style={draw, rectangle, minimum width=4cm, inner sep=4pt},
 				every text node part/.style={align=center}]
-
+				
 				\node (node1) at (0, 0) [cylinder, shape border rotate=90, draw, minimum height=1.25cm, minimum width=2.5cm, aspect=0.2] {Opencorporates};
 				\node[above=0.5cm of node1]  (node2) [cylinder, shape border rotate=90, draw, minimum height=1.25cm, minimum width=2.5cm, aspect=0.2] {Yelp};
 				\node[below=0.5cm of node1] (node3) [cylinder, shape border rotate=90, draw, minimum height=1.25cm, minimum width=2.5cm, aspect=0.2] {Opencorpdata};
@@ -296,38 +297,38 @@ BoldFont = *-Regular
 				
 			\end{tikzpicture}
 		\end{center}
-		\note{Let use an example to further illustrate our problem. Let say we have a client database with business names and address and we would like to levrage external data sources to extract more information of those clients without the need to speak with them.}
+		\note{Let's use an example to illustrate our problem further. Let's say we have a client database with business names and addresses, and we would like to leverage external data sources to extract more information about those clients without the need to speak with them.}
 	\end{frame}
-
+	
 	\begin{frame}{An example}
 		How can we match our information with external data sources if we do not control it and our information is not unique?
-		\note{A question arises from the example, how can we match data that is not unique? Names are definitely not unique, and addresses are not "unique," but clients can change over time; thus a given address can appear multiple times in a dataset.}
+		\note{A question arises from the example, how can we match data that is not unique? Names are definitely not unique, and addresses are not "unique," but clients can change over time; thus, a given address can appear multiple times in a dataset.}
 	\end{frame}
 	
 	\section{How can we develop a solution for that?}
 	
 	\begin{frame}{What our solution needs to do?}
-	\begin{center}
-		\begin{tikzpicture}[internal/.style={draw, rectangle, minimum width=4cm, inner sep=4pt},
-			every text node part/.style={align=center}]
-			\node[internal, align=center, minimum height=1.15cm](node1) at (-5, -2.75) {Our solution};
-			
-			\node (node2) at (0, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm, minimum width=2cm, aspect=0.2] {Opencorporates};
-			\draw[->,>=stealth, line width=1mm] (node2) edge (node1.east);
-			
-			\node (node3) at (-10, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm,minimum width=2cm, aspect=0.2] {Our database};
-			\draw[->,>=stealth, line width=1mm] (node3) edge (node1.west);
-			
-			\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node4) at (-5, -5.5) {Sirius Cybernetics\\221B Baker St., Montreal};
-			%\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm, fill=white](node5) at (-5.25, -5.75) {\\};
-			\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm, fill=white](node6) at (-5.50, -6) {Sirius Cybernetics Corp.\\ 221B Baker St., London};
-			
-			\draw[->,>=stealth, line width=1mm] (node1) edge (node4);
-		\end{tikzpicture}
-	\end{center}
-	\note{Our solution needs to be able to take at least two databases and extract the duplicate element among the two data sources. Namely, duplicate detection. That is, detecting if two data points are duplicates or not.}
+		\begin{center}
+			\begin{tikzpicture}[internal/.style={draw, rectangle, minimum width=4cm, inner sep=4pt},
+				every text node part/.style={align=center}]
+				\node[internal, align=center, minimum height=1.15cm](node1) at (-5, -2.75) {Our solution};
+				
+				\node (node2) at (0, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm, minimum width=2cm, aspect=0.2] {Opencorporates};
+				\draw[->,>=stealth, line width=1mm] (node2) edge (node1.east);
+				
+				\node (node3) at (-10, -2.75) [cylinder, shape border rotate=90, draw, minimum height=1.15cm,minimum width=2cm, aspect=0.2] {Our database};
+				\draw[->,>=stealth, line width=1mm] (node3) edge (node1.west);
+				
+				\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node4) at (-5, -5.5) {Sirius Cybernetics\\221B Baker St., Montreal};
+				%\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm, fill=white](node5) at (-5.25, -5.75) {\\};
+				\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm, fill=white](node6) at (-5.50, -6) {Sirius Cybernetics Corp.\\ 221B Baker St., London};
+				
+				\draw[->,>=stealth, line width=1mm] (node1) edge (node4);
+			\end{tikzpicture}
+		\end{center}
+		\note{Our solution needs to be able to take at least two databases and extract the duplicate element among the two data sources. Namely, duplicate detection. That is, detecting if two data points are duplicates or not.}
 	\end{frame}
-
+	
 	\begin{frame}{What do we need to achieve that?}
 		\begin{itemize}
 			\item Natural language processing (NLP)
@@ -335,7 +336,7 @@ BoldFont = *-Regular
 		\end{itemize}
 		\note{To achieve such a solution, we need to use NLP and use or develop a duplicate detection mechanism that will be able to match duplicate records between sources.}
 	\end{frame}
-
+	
 	\begin{frame}{What is NLP?}
 		\begin{center}
 			\begin{tikzpicture}[thick,
@@ -368,11 +369,11 @@ BoldFont = *-Regular
 			\end{tikzpicture}
 		\end{center}
 		\note{So first, what we need is NLP. So, let's first define what NLP is.
-			NLP is a subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language, in particular how to program computers to process and analyze large amounts of natural language data. 
+			NLP is a subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language, particularly how to program computers to process and analyze large amounts of natural language data. 
 			
 			Thus, we need NLP because the data we can use to identify two similar data points will most likely be textual data such as clients' names, addresses, and customer reviews. Otherwise, if we have numerical data such as social security numbers or any numerical data that is a unique mapping to a client, we do not require duplicate detection but rather classical programming rules.}
 	\end{frame}
-
+	
 	\begin{frame}{What is AI?}
 		\begin{center}
 			\center
@@ -382,7 +383,7 @@ BoldFont = *-Regular
 		\end{center}
 		\note{I will not argue about the definition of intelligence or AI. For this presentation, when I say AI, what I mean is machine learning -> ML and, more precisely, supervised ML. The basic idea of ML is to develop a system that can, given data, statistically predict something. For example, let's say we want to classify if a picture includes a cat. A non-AI system will use heuristic rules such as: does it have fur, claws, etc.}
 	\end{frame}
-
+	
 	\begin{frame}{What is AI?}
 		\centering
 		\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
@@ -394,14 +395,14 @@ BoldFont = *-Regular
 			
 			\draw[->,>=stealth, line width=1mm] (node1) edge (node2);
 			\draw[->,>=stealth, line width=1mm] (label) edge (node2);
-				
+			
 			\node[align=center, right=1cm of node2](node3) {``Not a cat"};
 			\draw[->,>=stealth, line width=1mm] (node2) edge (node3);
 			
 		\end{tikzpicture}
 		\note{Where an ML approach will use numerous labelled data of cats that include or not a cat and will try to learn his own representation of a cat, where the label are used to give insight to the model where he is mistaken.}
 	\end{frame}
-
+	
 	\begin{frame}{What is AI?}
 		\centering
 		\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
@@ -418,9 +419,9 @@ BoldFont = *-Regular
 			\draw[->,>=stealth, line width=1mm] (node2) edge (node3);
 			
 		\end{tikzpicture}
-		\note{and use those internal representations to predict never seen picture. So, in brief, the basic idea of supervised ML is to teach a model or something by giving it examples of the expected output given a context (the image) using labelled examples.}
+		\note{and use those internal representations to predict a never seen picture. So, the basic idea of supervised ML is to teach a model or something by giving it examples of the expected output given a context (the image) using labelled examples.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{duplicate detection mechanism}	
 		\begin{center}
 			\centering
@@ -441,16 +442,16 @@ BoldFont = *-Regular
 		\end{center}
 		\note{Our second requirement is a mechanism that can detect if two data points share enough similarity to be considered as a duplicate. Thus, it need to give a sort of a probability of that similarity.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{duplicate detection mechanism}	
 		\begin{itemize}
 			\item Rules-based
 			\item Probabilistic
 			\item ML
 		\end{itemize}
-		\note{This type of detection is also called record linkage, which is linking records in a data set that refer to the same entity across different data sources. An entity, is a business client here compose of the name and address. Such solutions roughly rely on three types of approaches. First, it can use specific rules to determine if two records refer to the same entity. It can also use weighted probabilities of attributes to compute the probability that two records are the same entity. And finally, the approach I will present in the use case in the next part of my presentation is machine learning.}
+		\note{This type of detection is also called record linkage, which is linking records in a data set that refer to the same entity across different data sources. An entity is a business client here composed of the name and address. Such solutions roughly rely on three types of approaches. First, it can use specific rules to determine if two records refer to the same entity. It can also use weighted probabilities of attributes to compute the probability that two records are the same entity. And finally, the approach I will present in the use case in the next part of my presentation is machine learning.}
 	\end{frame}
-
+	
 	\begin{frame}{ML Duplicate detection mechanism}
 		\centering
 		\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
@@ -471,7 +472,7 @@ BoldFont = *-Regular
 		\end{tikzpicture}
 		\note{Speaking of the ML approach, using the same ML definition as previously presented with the example with the cat, to build such a system, we need labels and two databases such as illustrated here.}
 	\end{frame}
-
+	
 	\begin{frame}{ML Duplicate detection mechanism}
 		\centering
 		\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
@@ -490,7 +491,7 @@ BoldFont = *-Regular
 		\end{tikzpicture}
 		\note{Thus, after training our model, we will be able to take new client information and extract the most probable pair.}
 	\end{frame}
-		
+	
 	\section{How can we compute the similarity between two entities?}
 	
 	\begin{frame}\frametitle{Similarity Algorithm}	
@@ -525,27 +526,27 @@ BoldFont = *-Regular
 				
 			\end{tikzpicture}
 		\end{center}
-	\note{However, a machine learning algorithm needs numbers to work; thus, they cannot "simply" use textual data. That is where NLP comes into action.}
+		\note{However, a machine learning algorithm needs numbers to work; thus, they cannot "simply" use textual data. That is where NLP comes into action.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{NLP ML Algorithm}
-        \begin{center}
-        	\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
-        		every text node part/.style={align=center}]
-        		\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node1) at (0, -2.75) {CHOAM\\4 Privet Drive, Little Whinging, Surrey};
-        		
-        		\node[align=center, minimum height=1.15cm, right=1.75cm of node1](node11) {$[0, 1, 0, 1, 1]$};
-        		
-        		\node[internal, align=center, minimum height=1.15cm, right=1.75cm of node11, rounded corners](node2) {ML Model};
-        		
-        		\draw [-stealth, line width=1mm] (node1) -- node [sloped, anchor=center, above] {Encoding} (node11);
-        		\draw[->,>=stealth, line width=1mm] (node11) edge (node2);
-        	\end{tikzpicture}
-        \end{center}
-        
-        \note{So, what we need is to convert (or encode) these textual data into "numbers" that capture an information. There is different way to do so, each with advantages and disadvantages and limitations, I will no go into details about each and will only present two.}
+		\begin{center}
+			\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
+				every text node part/.style={align=center}]
+				\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node1) at (0, -2.75) {CHOAM\\4 Privet Drive, Little Whinging, Surrey};
+				
+				\node[align=center, minimum height=1.15cm, right=1.75cm of node1](node11) {$[0, 1, 0, 1, 1]$};
+				
+				\node[internal, align=center, minimum height=1.15cm, right=1.75cm of node11, rounded corners](node2) {ML Model};
+				
+				\draw [-stealth, line width=1mm] (node1) -- node [sloped, anchor=center, above] {Encoding} (node11);
+				\draw[->,>=stealth, line width=1mm] (node11) edge (node2);
+			\end{tikzpicture}
+		\end{center}
+		
+		\note{So, what we need is to convert (or encode) these textual data into "numbers" that capture information. There are different ways to do so, each with advantages, disadvantages, and limitations; I will not go into detail and will only present two.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{One-hot encoding}
 		\begin{center}
 			\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
@@ -563,7 +564,7 @@ BoldFont = *-Regular
 		
 		\note{An intuitive way to encode textual data is one-hot encoding. That is, creating a reference vocabulary dictionary base on ALL the words that appear in the corpus. Then, using the long sequence of vocabulary, we set all values to 0 and change it to 1 (at a specific index position) if one of the words appears in the sequence. So, using the dictionary in our example, the first seven numbers will be ones, and all the rest will be zeros.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{One-hot encoding}
 		
 		Advantages
@@ -572,17 +573,17 @@ BoldFont = *-Regular
 			\item Not complex
 			\item Easy to encode
 		\end{itemize}
-	
+		
 		Disadvantages
 		\begin{itemize}
 			\item Sparse
 			\item Out-of-vocabulary
 		\end{itemize}
 		
-		\note{The three major advantages of this approach are that it is easy to implement, it is not complex to easier to understand for a human, and it is easy to encode sentences using this approach.
-		However, the two major disadvantages are that such representation (encoding) is sparse. That is, they are composed of a lot of zeros. In our example, if we have a cardinality of thousands of words, we will have seven ones and thousands of zeros. For ML models, is it a problem since it has been shown that they tend to not work properly with sparse data. Also, it is impossible to handle vocabulary not seen in the corpus, so new words or unseen words cannot be processed. Thus, we need to find a better way to encode our data.}
+		\note{The three significant advantages of this approach are that it is easy to implement, it is not complex to easier to understand for a human, and it is easy to encode sentences using this approach.
+			However, the two major disadvantages are that such representation (encoding) is sparse. That is, they are composed of a lot of zeros. In our example, if we have a cardinality of thousands of words, we will have seven ones and thousands of zeros. For ML models, is it a problem since it has been shown that they tend to not work properly with sparse data. Also, it is impossible to handle vocabulary not seen in the corpus, so new words or unseen words cannot be processed. Thus, we need to find a better way to encode our data.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Similarity Algorithm}
 		\begin{center}
 			\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
@@ -600,67 +601,67 @@ BoldFont = *-Regular
 			\end{tikzpicture}
 		\end{center}
 		
-		\note{Another approach to encoding entities into a numerical value is to use what we call a similarity algorithm. Namely, an algorithm that can compute a numerical value base on two strings, as illustrated in this slide.}
+		\note{Another approach to encoding entities into a numerical value is to use what we call a similarity algorithm. Namely, an algorithm can compute a numerical value based on two strings, as illustrated in this slide.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Jaccard}
 		\begin{center}
-		$\frac{\begin{tikzpicture}[thick,
-				set/.style = {circle,
-					minimum size = 3cm}]
-				
-				% Set A
-				\node[set] (A) at (0,0) {A};
-				
-				% Set B
-				\node[set] (B) at (1.8,0) {B};
-				
-				\begin{scope}
-					\clip (0,0) circle(1.5cm);
-					\clip (1.8,0) circle(1.5cm);
-					\fill[bleu!30](0,0) circle(1.5cm);
-				\end{scope}
-				
-				\node at (0.9,0) {$A\cap B$};
-				% Circles outline
-				\draw (0,0) circle(1.5cm);
-				\draw (1.8,0) circle(1.5cm);
-				
-		\end{tikzpicture}}{\begin{tikzpicture}[thick,
-		set/.style = {circle,
-			minimum size = 3cm}]
-		
-		% Set A
-		\node[set, fill=bleu!30] (A) at (0,0) {A};
-		
-		% Set B
-		\node[set, fill=bleu!30] (B) at (1.8,0) {B};
-		
-		\begin{scope}
-			\clip (0,0) circle(1.5cm);
-			\clip (1.8,0) circle(1.5cm);
-			\fill[bleu!30](0,0) circle(1.5cm);
-		\end{scope}
-		
-		\node at (0.9,0) {$A\cup B$};
-		
-		% Circles outline
-		\draw (0,0) circle(1.5cm);
-		\draw (1.8,0) circle(1.5cm);
-	\end{tikzpicture}}$
+			$\frac{\begin{tikzpicture}[thick,
+					set/.style = {circle,
+						minimum size = 3cm}]
+					
+					% Set A
+					\node[set] (A) at (0,0) {A};
+					
+					% Set B
+					\node[set] (B) at (1.8,0) {B};
+					
+					\begin{scope}
+						\clip (0,0) circle(1.5cm);
+						\clip (1.8,0) circle(1.5cm);
+						\fill[bleu!30](0,0) circle(1.5cm);
+					\end{scope}
+					
+					\node at (0.9,0) {$A\cap B$};
+					% Circles outline
+					\draw (0,0) circle(1.5cm);
+					\draw (1.8,0) circle(1.5cm);
+					
+			\end{tikzpicture}}{\begin{tikzpicture}[thick,
+					set/.style = {circle,
+						minimum size = 3cm}]
+					
+					% Set A
+					\node[set, fill=bleu!30] (A) at (0,0) {A};
+					
+					% Set B
+					\node[set, fill=bleu!30] (B) at (1.8,0) {B};
+					
+					\begin{scope}
+						\clip (0,0) circle(1.5cm);
+						\clip (1.8,0) circle(1.5cm);
+						\fill[bleu!30](0,0) circle(1.5cm);
+					\end{scope}
+					
+					\node at (0.9,0) {$A\cup B$};
+					
+					% Circles outline
+					\draw (0,0) circle(1.5cm);
+					\draw (1.8,0) circle(1.5cm);
+			\end{tikzpicture}}$
 		\end{center}
 		
 		\note{A well know similarity metric is Jaccard. Which is the intersection of tokens (words) between two sentences over all the possible tokens in the two sequences.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Jaccard}
 		\begin{center}
 			$$\frac{\{\text{CHOAM}, \text{Privet}, \text{Surrey}\}}{\{\text{CHOAM}, 4, 12, \text{Privet}, \text{Drive}, \text{Drve}, \text{Little}, \text{little}, \text{Whinging}, \text{whinging}, \text{Surrey}\}} =\frac{3}{11} = 0.2727$$
 		\end{center}
-	
-	\note{So using our previous example of comparison between two entities will give the following results. Note that this approach is case sensitive, and in that specific case, I did not apply any data cleaning, but it could clearly increase the similarity since two more tokens will be similar (little and whinging).}
+		
+		\note{So using our previous example of comparison between two entities will give the following results. Note that this approach is case sensitive, and in that specific case, I did not apply any data cleaning, but it could clearly increase the similarity since two more tokens will be similar (little and whinging).}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Jaccard}
 		\begin{center}
 			$$\frac{\{\text{choam}, \text{privet}, \text{little},  \text{whinging},\text{surrey}\}}{\{\text{choam}, 4, 12, \text{privet}, \text{drive}, \text{drve}, \text{little}, \text{whinging}, \text{surrey}\}} =\frac{5}{9} = 0.5556$$
@@ -668,8 +669,8 @@ BoldFont = *-Regular
 		
 		\note{Note that this approach is case sensitive, and in that specific case, I did not apply any data cleaning, but it could nearly double the similarity since two more tokens will be similar (little and whinging).}
 	\end{frame}
-
-		\begin{frame}\frametitle{Similarity Algorithm}
+	
+	\begin{frame}\frametitle{Similarity Algorithm}
 		\begin{itemize}
 			\item Jaro
 			\item Jaro-Winkler
@@ -683,9 +684,9 @@ BoldFont = *-Regular
 		
 		\note{Numerous similarity algorithms exist, such as Jaro, Jaro-Winkler, Jaccard, Levenshtein, overlap coefficient, etc. I will not present all of them since it is out of the scope of this presentation. But there are many different ways to compute the similarity between two strings, where each does not focus on the same thing. For example, Jaro focus on a smaller token unit than Jaccard. Jaro focuses on the character level. So, it becomes interesting to note that computing our example will output different values based on the algorithm used.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Similarity Algorithm}
-	\begin{center}
+		\begin{center}
 			\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
 				every text node part/.style={align=center}]
 				\node[internal, align=center, rounded corners=1ex, minimum height=1.15cm](node1) at (0, 0) {CHOAM\\4 Privet Drive, Little Whinging, Surrey};
@@ -701,10 +702,10 @@ BoldFont = *-Regular
 			\end{tikzpicture}
 		\end{center}
 		
-		\note{So what I ended up doing in my master thesis was to use numerous similarity algorithms to create a similarity vector between two entities. By using, let's say, 7 similarity algorithms, we can get a vector of dimension seven.}
+		\note{So what I ended up doing in my master thesis was to use numerous similarity algorithms to create a similarity vector between two entities. By using, let's say, seven similarity algorithms, we can get a vector of dimension seven.}
 	\end{frame}
-
-
+	
+	
 	\begin{frame}\frametitle{Final approach}	
 		\begin{center}
 			\begin{tikzpicture}[internal/.style={draw, rectangle, inner sep=4pt},
@@ -730,30 +731,30 @@ BoldFont = *-Regular
 		\end{center}
 		\note{The final approach was something like this. I take two entities and compute a few similarity scores using different similarity algorithms. This vector is then used as the input of an ML algorithm that uses this information to predict using a binary approach (the same or not) along with a given probability.}
 	\end{frame}
-
-
+	
+	
 	\begin{frame}\frametitle{ML Algorithm}	
-	\begin{center}
-		\begin{tikzpicture}[leaf/.style={draw, diamond, minimum width=0.6cm, minimum height=1.2cm, inner sep=0pt}, internal/.style={draw, rectangle, minimum width=0.6cm, inner sep=4pt}]
-		\node[internal, align=center](node0) at (0.000, -0.000) {$\text{Jaccard(A, B)} \ge 0,75$};
-		\node[leaf, fill=red, align=center](node1) at (-2, -1.600) {};
-		\node[internal, align=center](node2) at (2, -1.600) {$\text{Jaro-Winkler(A, B)} \ge 0,76$};
-		\node[leaf, fill=red, align=center](node3) at (1, -3.200) {};
-		\node[leaf, fill=bleu, align=center](node12) at (3, -3.200) {};
-		
-		\draw (node0) -- (node1.north);
-		\draw (node0) -- (node2);
-		\draw (node2) -- (node3.north);
-		\draw (node2) -- (node12.north);
-		
-		\node[inner sep=0pt, minimum height=10pt, minimum width=10pt, fill=bleu, draw](legend0) at (-2, -4.200) {};
-		\node[anchor=west] at (legend0.east) {``The same entity''};
-		\node[inner sep=0pt, minimum height=10pt, minimum width=10pt, fill=red, draw](legend1) at (2, -4.200) {};
-		\node[anchor=west] at (legend1.east) {``Not the same entity''};
-		\end{tikzpicture}
-	\end{center}
-	\note{Here is an example of an ML model trained using a labelled dataset. We give numerous data examples of an entity composed of a name and address encoded using similarity algorithms and a 0-1 label. One if the entity is the same and 0 otherwise. Then, the training algorithm will find a way to leverage the information vector to classify the comparison.}
-\end{frame}
+		\begin{center}
+			\begin{tikzpicture}[leaf/.style={draw, diamond, minimum width=0.6cm, minimum height=1.2cm, inner sep=0pt}, internal/.style={draw, rectangle, minimum width=0.6cm, inner sep=4pt}]
+				\node[internal, align=center](node0) at (0.000, -0.000) {$\text{Jaccard(A, B)} \ge 0,75$};
+				\node[leaf, fill=red, align=center](node1) at (-2, -1.600) {};
+				\node[internal, align=center](node2) at (2, -1.600) {$\text{Jaro-Winkler(A, B)} \ge 0,76$};
+				\node[leaf, fill=red, align=center](node3) at (1, -3.200) {};
+				\node[leaf, fill=bleu, align=center](node12) at (3, -3.200) {};
+				
+				\draw (node0) -- (node1.north);
+				\draw (node0) -- (node2);
+				\draw (node2) -- (node3.north);
+				\draw (node2) -- (node12.north);
+				
+				\node[inner sep=0pt, minimum height=10pt, minimum width=10pt, fill=bleu, draw](legend0) at (-2, -4.200) {};
+				\node[anchor=west] at (legend0.east) {``The same entity''};
+				\node[inner sep=0pt, minimum height=10pt, minimum width=10pt, fill=red, draw](legend1) at (2, -4.200) {};
+				\node[anchor=west] at (legend1.east) {``Not the same entity''};
+			\end{tikzpicture}
+		\end{center}
+		\note{Here is an example of an ML model trained using a labelled dataset. We give numerous data examples of an entity composed of a name and address encoded using similarity algorithms and a 0-1 label. One if the entity is the same and 0 otherwise. Then, the training algorithm will find a way to leverage the information vector to classify the comparison.}
+	\end{frame}
 	
 	\begin{frame}\frametitle{Name-Address Information Vector Generator}
 		\begin{block}{Example of an information vector}
@@ -767,30 +768,30 @@ BoldFont = *-Regular
 				\end{tabular}
 			} % end of scope of "\resizebox"  directive
 		\end{block}
-	\note{Here is an example of a vector computed. The first row is the comparison of the two names, and the second row is the comparison of the two addresses. I did not use the same algorithm depending on whether we compare the name or address. In the end, the vector is composed of 13 elements.}
+		\note{Here is an example of a vector computed. The first row is the comparison of the two names, and the second row is the comparison of the two addresses. I did not use the same algorithm depending on whether we compare the name or address. In the end, the vector is composed of 13 elements.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Results}
-			\centering
-			\begin{tabular}{cccc|c}
-				\toprule
-				&\begin{tabular}[c]{@{}c@{}}Logistic \\ Regression\end{tabular}  & \begin{tabular}[c]{@{}c@{}}Random \\ Forest\end{tabular} & \begin{tabular}[c]{@{}c@{}}Multilayer \\ perceptron\end{tabular} & Jaccard \\ \midrule
-				Recall (\%)  & 66.67                                                                                                               & 73.54                                                   & \textbf{79.73}                                                            & 72.51  \\
-				Precision & \textbf{89.77}&81.06&87.55&81.78\\
-				\bottomrule
-			\end{tabular}
+		\centering
+		\begin{tabular}{cccc|c}
+			\toprule
+			&\begin{tabular}[c]{@{}c@{}}Logistic \\ Regression\end{tabular}  & \begin{tabular}[c]{@{}c@{}}Random \\ Forest\end{tabular} & \begin{tabular}[c]{@{}c@{}}Multilayer \\ perceptron\end{tabular} & Jaccard \\ \midrule
+			Recall (\%)  & 66.67                                                                                                               & 73.54                                                   & \textbf{79.73}                                                            & 72.51  \\
+			Precision & \textbf{89.77}&81.06&87.55&81.78\\
+			\bottomrule
+		\end{tabular}
 		
-			\link{https://corpus.ulaval.ca/jspui/handle/20.500.11794/67747/}{Detection of Duplicates Among Non-structured Data From Different Data Sources}
-			\note{
-				So here are some results of my approach; note that any part of the pre-processing and technical aspect has not been discussed since I focused more on the end goal rather than the complete way to implement it. However, if you have more questions about the details, you can refer to my master thesis (which is in French, but tools like Deepl can convert the part you are interested in) or ask questions personally; I would be glad to respond to more technical questions at the end.
-
-				At this point of my work, the baseline is the result of using only the name as the comparison point sing the Jaccard similarity that yields a recall of 72.51. That is, roughly 3 out of 4 business names can be mapped with an external source (in that case, it was the equivalent of open corporate in Quebec). We focus on the recall since we want to match as many entities as possible. We evaluate in second if the precision since, for my problem, a human is still in the loop to validate this; it can reject or accept the proposition.
-				
-				The random forest and the multilayer perceptron achieve better recall than Jaccard. The best is the perceptron with near $80\%$ recall. So, it means that using both the names and address and a complex vector of 14 similarity algorithms only yield a performance increase of around 7\%, which is interesting but not that big of a deal. However, the precision is also better with the perceptron meany that we capture more examples and have fewer errors.
-				}
+		\link{https://corpus.ulaval.ca/jspui/handle/20.500.11794/67747/}{Detection of Duplicates Among Non-structured Data From Different Data Sources}
+		\note{
+			So here are some results of my approach; note that any part of the pre-processing and technical aspect has not been discussed since I focused more on the end goal rather than the complete way to implement it. However, if you have more questions about the details, you can refer to my master thesis (which is in French, but tools like Deepl can convert the part you are interested in) or ask questions personally; I would be glad to respond to more technical questions at the end.
+			
+			At this point of my work, the baseline is the result of using only the name as the comparison point sing the Jaccard similarity that yields a recall of 72.51. That is, roughly 3 out of 4 business names can be mapped with an external source (in that case, it was the equivalent of open corporate in Quebec). We focus on the recall since we want to match as many entities as possible. We evaluate in second if the precision since, for my problem, a human is still in the loop to validate this; it can reject or accept the proposition.
+			
+			The random forest and the multilayer perceptron achieve better recall than Jaccard. The best is the perceptron with near $80\%$ recall. So, it means that using both the names and addresses and a complex vector of 14 similarity algorithms only yields a performance increase of around 7\%, which is interesting but not that much. However, the precision is also better with the perceptron meany that we capture more examples and have fewer errors.
+		}
 	\end{frame}
-
-
+	
+	
 	\begin{frame}\frametitle{Inference Times}
 		\centering
 		\begin{tabular}{cccc|c}
@@ -798,50 +799,55 @@ BoldFont = *-Regular
 			(second) & \begin{tabular}[c]{@{}c@{}}Logistic\\ Regression\end{tabular} & \begin{tabular}[c]{@{}c@{}}Random\\ Forest\end{tabular} & \begin{tabular}[c]{@{}c@{}}Multilayer \\ Perceptron\end{tabular} & Jaccard \\\midrule
 			\begin{tabular}[c]{@{}c@{}}Time\end{tabular} & 1,32                                                            & 1,74                                                       & 1,34                                                        & 0,25     \\\bottomrule
 		\end{tabular}
-	
+		
 		\note{However, at this point, from a business point of view, it can be enough to just use the Jaccard algorithm on the name since it gives quite good results and is less complex and require less computing power, as shown in this slide where ML approach takes more time than only using the baseline approach. Nevertheless, since it was an academic project, I've pushed a little further to increase performance.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Improving the Results - $N$ Most Similar}
 		We consider a matching is good when the pair \textit{(Our database entity, external data source entity)} is included in the $N$ most similar rather than the top-1.
-		\note{To improve performance, a straightforward approach is to reduce the task's difficulty. That is, rather than having an obligation to put the correct answer first, we will consider it a success if the correct answer is in the top $N$ most similar (based on the probability). For the top-N, the difference between the first and second was at the fourth or fifth decimal value. Since, in our case, human are still used in the process, it is not more difficult to select from a top-N rather than accepting or rejecting one element.}
+		\note{To improve performance, a straightforward approach is to reduce the task's difficulty. Rather than having an obligation to put the correct answer first, we will consider it a success if the correct answer is in the top $N$ most similar (based on the probability). For the top-N, the difference between the first and second was at the fourth or fifth decimal value. Since, in our case, humans are still used in the process, it is not more difficult to select from a top-N rather than accepting or rejecting one element.}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Improving the Results - $N$ Most Similar}
-			\begin{tikzpicture}
-				\begin{axis}[grid style={dashed,gray!50}, axis y line*=left, axis x line*=bottom, ybar, nodes near coords=\rotatebox{90}{\pgfmathprintnumber\pgfplotspointmeta}, nodes near coords style={font=\tiny}, every axis plot/.append style={line width=1.25pt, mark size=0pt}, width=\textwidth, height=.55\textwidth, grid=none, xtick=data, symbolic x coords={LR, RF, MP, Jaccard}, ylabel=Recall (\%)]
-					\addplot[bleu, fill,  opacity=0.5] table[x=x6, y=y6, col sep=comma]{./data/plot_rappel_top_n.csv};
-					\addplot[red, fill,  opacity=0.5] table[x=x7, y=y7, col sep=comma]{./data/plot_rappel_top_n.csv};
-					\addplot[couleurpolice, fill,  opacity=0.5] table[x=x8, y=y8, col sep=comma]{./data/plot_rappel_top_n.csv};
-					\addlegendentry{Top 1};
-					\addlegendentry{Top 5};
-					\addlegendentry{Top 10};
-				\end{axis}
+		\begin{tikzpicture}
+			\begin{axis}[grid style={dashed,gray!50}, axis y line*=left, axis x line*=bottom, ybar, nodes near coords=\rotatebox{90}{\pgfmathprintnumber\pgfplotspointmeta}, nodes near coords style={font=\tiny}, every axis plot/.append style={line width=1.25pt, mark size=0pt}, width=\textwidth, height=.55\textwidth, grid=none, xtick=data, symbolic x coords={LR, RF, MP, Jaccard}, ylabel=Recall (\%)]
+				\addplot[bleu, fill,  opacity=0.5] table[x=x6, y=y6, col sep=comma]{./data/plot_rappel_top_n.csv};
+				\addplot[red, fill,  opacity=0.5] table[x=x7, y=y7, col sep=comma]{./data/plot_rappel_top_n.csv};
+				\addplot[couleurpolice, fill,  opacity=0.5] table[x=x8, y=y8, col sep=comma]{./data/plot_rappel_top_n.csv};
+				\addlegendentry{Top 1};
+				\addlegendentry{Top 5};
+				\addlegendentry{Top 10};
+			\end{axis}
 		\end{tikzpicture}
 		\note{Such an approach gives the most performance increase for all approaches, but mostly on ML algorithm. Thus, we can now at most achieve a recall of more than 90\%. However, such an approach did not have a huge impact on precision. Precisions for all approaches are nearly the same.}
 	\end{frame}
-
+	
 	\section{Why develop our own solutions?}
 	
 	\begin{frame}\frametitle{Why develop our own solutions?}
-			There is commercial solutions out there, why not buying it?
-		\note{}
+		There is commercial solutions out there, why not buying it?
+		\note{
+			à lire
+		}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Why develop our own solutions?}
 		\begin{itemize}
 			\item Help empower your teams on important NLP steps,
 			\item It is a straightforward classification problem.
 		\end{itemize}
-		\note{}
+		\note{À lire
+		}
 	\end{frame}
-
+	
 	\begin{frame}\frametitle{Conclusion}
 		\begin{itemize}
 			\item NLP can help you bring value to your business.
 			\item I have presented a solution that one can develop to detect duplicates using NLP and ML.
 			\item Without deep learning, you can achieve interesting results in duplicate detection with external data sources.
 		\end{itemize}
+		\note{ conclusion
+	}
 	\end{frame}
 	
 	\input{couverture-arriere}
